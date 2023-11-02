@@ -242,7 +242,7 @@ def render_one_image(
         st.session_state[images_key][image_position]["bytesBase64Encoded"])
     )
     st.image(image)
-    
+
     if download_button:
         st.download_button(
             label='Download',
@@ -250,14 +250,14 @@ def render_one_image(
             data=image,
             file_name='image.png',
         )
-    
+
     if select_button and selected_image_key:
         if st.button(
             "Select", key=f"_btn_select_{images_key}_{image_position}"):
             st.session_state[selected_image_key] = image
-    
-    if edit_button and image_to_edit_key:
-        if st.button("Edit", key=f"_btn_edit_{images_key}_{image_position}"):
+
+    if st.button("Edit", key=f"_btn_edit_{images_key}_{image_position}"):
+        if edit_button and image_to_edit_key:
             st.session_state[image_to_edit_key] = image.getvalue()
 
 
@@ -354,7 +354,7 @@ def render_image_generation_ui(
     def submitted():
         st.session_state[image_text_prompt_key] = st.session_state[
             f"{image_text_prompt_key}_text_area"]
-    
+
     if image_text_prompt_key in st.session_state:
         st.session_state[
             f"{image_text_prompt_key}_text_area"] = st.session_state[
@@ -367,12 +367,10 @@ def render_image_generation_ui(
             'Select one of the pre populated prompts', pre_populated_prompts
         )
 
-        if f"{image_text_prompt_key}_text_area" in st.session_state and st.session_state[
-            f"{image_text_prompt_key}_text_area"] != '':
-            expanded = True
-        else:
-            expanded = False
-
+        expanded = (
+            f"{image_text_prompt_key}_text_area" in st.session_state
+            and st.session_state[f"{image_text_prompt_key}_text_area"] != ''
+        )
         with st.expander('[Optional] Write a custom prompt', expanded=expanded):
             st.write('''Provide a custom prompt to generate images. 
                 If you provide a custom prompt, the selected option from 
@@ -411,7 +409,7 @@ def render_image_generation_ui(
                     generated_images_key)
         except:
             st.error('Could not generate image. Try a different prompt.')
-    
+
     if auto_submit_first_pre_populated:
         if generated_images_key not in st.session_state:
             with st.spinner('Generating images ...'):

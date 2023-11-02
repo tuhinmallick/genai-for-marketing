@@ -16,6 +16,7 @@
 Content Activation:
 """
 
+
 import base64
 import io
 import pandas as pd
@@ -27,7 +28,7 @@ import utils_workspace
 import zipfile
 
 from io import BytesIO
-from utils_campaign import generate_names_uuid_dict 
+from utils_campaign import generate_names_uuid_dict
 from utils_config import GLOBAL_CFG, MODEL_CFG, PAGES_CFG
 
 page_cfg = PAGES_CFG["12_review_activate"]
@@ -74,7 +75,7 @@ with cols[1]:
 if CAMPAIGNS_KEY not in st.session_state:
     st.info("Please create a campaign first")
 else:
-    with st.form(PAGE_PREFIX_KEY+"_Choose_A_Campaign"):
+    with st.form(f"{PAGE_PREFIX_KEY}_Choose_A_Campaign"):
         st.write("**Choose a campaign to preview and edit**")
         selected_campaign = st.selectbox(
             "List of campaigns", 
@@ -103,7 +104,7 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
         with st.expander("📋 Campaign Brief", expanded=False):
             st.subheader("📋 Campaign Brief")
             campaign.brief = st.data_editor(campaign.brief)
-            
+
             col1, col2, col3 = st.columns([20, 30, 50])
 
             with col1:
@@ -112,7 +113,7 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
                 with st.spinner('Activation in progress...'):
                     time.sleep(3)
                 st.success('Activation completed')
-            
+
             with col2:
                 st.download_button(
                     label='⬇️ Download Brief',
@@ -169,9 +170,9 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
                 campaign.asset_classes_images,
                 column_config={f"image_{i}":st.column_config.ImageColumn()
                     for i in range(len(campaign.asset_classes_images.columns))})
-            
+
             col1, col2, col3 = st.columns([17, 33, 50])
-            
+
             with col1:
                 is_button_clicked = st.button(":loudspeaker: Activate")
             if is_button_clicked:
@@ -215,7 +216,7 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
                 column_config={"imageb64":st.column_config.ImageColumn()})
 
             col1, col2, col3 = st.columns([22, 28, 50])
-            
+
             with col1:
                 is_button_clicked = st.button(":loudspeaker: Send Emails")
             if is_button_clicked:
@@ -230,7 +231,7 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
                     file_name='emails_copy.csv',
                     mime='text/csv'
                 )
-                
+
     #Threads
     if campaign is not None and isinstance(campaign.ads_threads, dict):
         with st.expander("📱 Threads Ads", expanded=False):
@@ -242,12 +243,12 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
             with col2:
                 st.subheader("Threads Ads")
             campaign.ads_threads = st.data_editor(campaign.ads_threads)
-            
+
             if 'image' in campaign.ads_threads:
                 st.image(campaign.ads_threads["image"])
-            
+
             col1, col2, col3 = st.columns([30, 40, 30])
-            
+
             with col1:
                 is_button_clicked = st.button(":loudspeaker: Activate Threads Ads")
             if is_button_clicked:
@@ -269,7 +270,7 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
                         files_bytes_io = BytesIO(byte_data)
                         zip_file.writestr('threads_image.png',
                                           files_bytes_io.getvalue())
-                    
+
                     zip_file.writestr(
                         'threads_assets.csv', 
                         pd.DataFrame(
@@ -299,7 +300,7 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
                 st.image(campaign.ads_insta["image"])
 
             col1, col2, col3 = st.columns([32, 34, 34])
-            
+
             with col1:
                 is_button_clicked = st.button(
                     ":loudspeaker: Activate Instagram Ads")
@@ -322,7 +323,7 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
                         files_bytes_io = BytesIO(byte_data)
                         zip_file.writestr('instagram_image.png',
                                           files_bytes_io.getvalue())
-                    
+
                     zip_file.writestr(
                         'instagram_assets.csv', 
                         pd.DataFrame(
@@ -344,7 +345,7 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
             st.subheader("🖥️ Website Post")
             campaign.website_post = st.data_editor(campaign.website_post)
             st.image(campaign.website_post["website_image"])
-            
+
             col1, col2, col3 = st.columns([16, 34, 50])
 
             with col1:
@@ -392,10 +393,9 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
             f'{campaign.workspace_assets["folder_id"]}')
     st.write("**Google Workspace Integration** | "
             f"[Explore the assets folder in Google Drive ↗]({link})")
-    upload_to_drive_button = st.button(
-        "Upload available assets to Google Drive")
-
-    if upload_to_drive_button:
+    if upload_to_drive_button := st.button(
+        "Upload available assets to Google Drive"
+    ):
         # Asset group
         if (campaign is not None and 
             isinstance(campaign.asset_classes_images, pd.DataFrame) and 
@@ -429,10 +429,8 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
         else:
             st.info("Please link an asset group to the campaign "
                     "at the 'Asset Group for PMax' page")
-        
-    add_slide_button = st.button("Generate Workspace assets")
 
-    if add_slide_button:
+    if add_slide_button := st.button("Generate Workspace assets"):
         with st.spinner('Generating Google Slides ...'):
             try:
                 slide_id = utils_workspace.copy_drive_file(
@@ -442,7 +440,7 @@ if SELECTED_CAMPAIGN_KEY in st.session_state:
                 st.session_state[CAMPAIGNS_KEY][
                     st.session_state[SELECTED_CAMPAIGN_KEY]].workspace_assets[
                         "slide_id"] = slide_id
-                
+
                 sheet_id = utils_workspace.copy_drive_file(
                     drive_file_id=SHEET_TEMPLATE_ID,
                     parentFolderId=campaign.workspace_assets["folder_id"],

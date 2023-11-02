@@ -109,7 +109,7 @@ def render_marketing_prompt_design(
             with col1:
                 custom_prompt = st.text_area(
                     f"{prompt_label}",f"{prompt_example}", text_area_height)
-            
+
             with col2:
                 st.write('**Model parameters**')
                 if show_temperature:
@@ -145,12 +145,12 @@ def render_marketing_prompt_design(
                             top_k = top_k,
                             top_p = top_p
                         ).text
-                
+
                 st.session_state[state_key] = response
             except:
                 st.info('An exception occured. '
                         'Review and provide a valid prompt.')
-    
+
     if show_response and state_key in st.session_state:
         st.write('**Response**')
         for i in st.session_state[state_key].split('\n'):
@@ -158,7 +158,7 @@ def render_marketing_prompt_design(
 
         if translate:
             with st.form(key='{state_key}_translate_form'):
-                st.write(f"**Translate generated text**")
+                st.write("**Translate generated text**")
 
                 target_language_name = st.selectbox(
                     "Languages", options=TRANSLATE_CFG.keys())

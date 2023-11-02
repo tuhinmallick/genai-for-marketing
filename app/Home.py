@@ -16,6 +16,7 @@
 Initial page with an overview architecture and a description of each demo page.
 """
 
+
 import base64
 import streamlit as st
 
@@ -40,12 +41,12 @@ file_name_2 = page_cfg["file_name_2"]
 with open(file_name_1, "rb") as fp:
     contents = fp.read()
     main_image_1 = base64.b64encode(contents).decode("utf-8")
-    main_image_1 = 'data:image/png;base64,'+main_image_1
+    main_image_1 = f'data:image/png;base64,{main_image_1}'
 
 with open(file_name_2, "rb") as fp:
     contents = fp.read()
     main_image_2 = base64.b64encode(contents).decode("utf-8")
-    main_image_2 = 'data:image/png;base64,'+main_image_2
+    main_image_2 = f'data:image/png;base64,{main_image_2}'
 
 st.image(image=main_image_1)
 st.divider()

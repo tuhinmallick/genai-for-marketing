@@ -19,6 +19,7 @@ Audience and Insight finder:
   by translating from natural language to SQL queries.
 """
 
+
 import streamlit as st
 import utils_codey
 import vertexai
@@ -85,9 +86,7 @@ st.write(
 
 st.subheader('Data preview')
 st.write('Click to preview the CDP dataset tables')
-preview_button = st.button('Preview tables')
-
-if preview_button:
+if preview_button := st.button('Preview tables'):
     if PREVIEW_TABLES_KEY in st.session_state:
         del st.session_state[PREVIEW_TABLES_KEY]
     else:
@@ -103,13 +102,15 @@ if PREVIEW_TABLES_KEY in st.session_state:
     if RESULT_PREVIEW_QUERY_KEY not in st.session_state:
         result_query = []
         with st.spinner('Querying BigQuery...'):
-            for table in st.session_state[PREVIEW_TABLES_KEY]:
-                result_query.append({
+            result_query.extend(
+                {
                     "name": table['name'],
-                    "dataframe": bqclient.query(table['query']).to_dataframe()
-                })
+                    "dataframe": bqclient.query(table['query']).to_dataframe(),
+                }
+                for table in st.session_state[PREVIEW_TABLES_KEY]
+            )
         st.session_state[RESULT_PREVIEW_QUERY_KEY] = result_query
-    
+
     for result in st.session_state[RESULT_PREVIEW_QUERY_KEY]:
         st.write(f'Preview for table: {result["name"]}')
         st.dataframe(result['dataframe'])

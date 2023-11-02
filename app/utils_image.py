@@ -268,7 +268,7 @@ def render_one_image(
         st.session_state[images_key][image_position]["bytesBase64Encoded"])
     )
     st.image(image)
-    
+
     if download_button:
         st.download_button(
             label='Download',
@@ -276,14 +276,14 @@ def render_one_image(
             data=image,
             file_name='image.png',
         )
-    
+
     if select_button and selected_image_key:
         if st.button(
             "Select", key=f"_btn_select_{images_key}_{image_position}"):
             st.session_state[selected_image_key] = image
 
-    if edit_button and image_to_edit_key:
-        if st.button("Edit", key=f"_btn_edit_{images_key}_{image_position}"):
+    if st.button("Edit", key=f"_btn_edit_{images_key}_{image_position}"):
+        if edit_button and image_to_edit_key:
             st.session_state[image_to_edit_key] = image.getvalue()
 
 
@@ -372,19 +372,19 @@ def render_image_generation_ui(
         None.
     """
 
-    SAMPLE_COUNT = [8, 4, 2, 1]
-    SAMPLE_IMAGE_SIZE = [256, 64, 512, 1024]
-    # ASPECT_RATIO = ['1:1', '5:4', '3:2', '7:4', '4:3', '16:9', '9:16']
-    ASPECT_RATIO = ['1:1']
-
-    
     if image_text_prompt_key in st.session_state:
         st.session_state[
             f"{image_text_prompt_key}_text_area"] = st.session_state[
                 image_text_prompt_key]
-    
+
     if auto_submit_first_pre_populated:
         if generated_images_key not in st.session_state:
+            SAMPLE_COUNT = [8, 4, 2, 1]
+            SAMPLE_IMAGE_SIZE = [256, 64, 512, 1024]
+            # ASPECT_RATIO = ['1:1', '5:4', '3:2', '7:4', '4:3', '16:9', '9:16']
+            ASPECT_RATIO = ['1:1']
+
+
             with st.spinner('Generating images ...'):
                 image_generation(
                     pre_populated_prompts[0],

@@ -17,6 +17,7 @@
 Utility module to work with app config.
 """
 
+
 from os.path import isfile
 import tomllib
 
@@ -30,7 +31,7 @@ with open(APP_TOML, "rb") as f:
         data = tomllib.load(f)
     except tomllib.TOMLDecodeError as e:
         print("Invalid App Configuration TOML file.")
-        print(str(e))
+        print(e)
         raise
 
 def merge(a: dict, b: dict):
@@ -50,10 +51,10 @@ if isfile(OVERRIDE_TOML):
             merge(data, data_override)
         except tomllib.TOMLDecodeError as e:
             print("Invalid Override TOML File")
-            print(str(e))
+            print(e)
         except Exception as e:
             print("Unexpected error")
-            print(str(e))
+            print(e)
             raise
 
 assert "global" in data, "No global configurations in the config"

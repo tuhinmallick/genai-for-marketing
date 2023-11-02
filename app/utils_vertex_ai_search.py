@@ -47,7 +47,7 @@ def complete_query(
         A list of suggested queries.
     """
     suggestions_list = []
-    
+
     if len(search_query) > 2:
         # The full resource name of the search engine data store
         # e.g. projects/*/locations/global/collections/default_collection/dataStores/default_data_store
@@ -65,9 +65,10 @@ def complete_query(
         # Make the request
         response = complete_client.complete_query(request=request)
 
-        for query_suggestion in response.query_suggestions:
-            suggestions_list.append(query_suggestion.suggestion)
-
+        suggestions_list.extend(
+            query_suggestion.suggestion
+            for query_suggestion in response.query_suggestions
+        )
     # Handle the response
     return suggestions_list
 

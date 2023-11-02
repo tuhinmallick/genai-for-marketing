@@ -64,9 +64,7 @@ def copy_drive_file(
     }
     drive_response = drive_service.files().copy(
         fileId=drive_file_id, body=body).execute()
-    presentation_copy_id = drive_response.get('id')
-
-    return presentation_copy_id
+    return drive_response.get('id')
 
 
 def upload_to_folder(
@@ -174,19 +172,15 @@ def set_permission(
 def get_chart_id(
         sheets_service,
         spreadsheet_id):
-    spreadsheet_id = spreadsheet_id  
-    ranges = [] 
-    include_grid_data = False 
+    spreadsheet_id = spreadsheet_id
+    ranges = []
+    include_grid_data = False
     request = sheets_service.spreadsheets().get(spreadsheetId=spreadsheet_id,
                                             ranges=ranges,
                                             includeGridData=include_grid_data)
     response = request.execute()
 
-    chart_id_list = []
-    for chart in response['sheets'][0]['charts']:
-        chart_id_list.append(chart['chartId'])
-
-    return chart_id_list
+    return [chart['chartId'] for chart in response['sheets'][0]['charts']]
 
 
 def merge_slides(
@@ -289,7 +283,8 @@ def create_sheets_chart(
     body = {
         'requests': requests
     }
-    response = slides_service.presentations().batchUpdate(
-        presentationId=presentation_id, body=body).execute()
-    
-    return response
+    return (
+        slides_service.presentations()
+        .batchUpdate(presentationId=presentation_id, body=body)
+        .execute()
+    )

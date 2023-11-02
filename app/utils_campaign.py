@@ -56,10 +56,10 @@ def add_new_campaign(name: str) -> str:
 
 
 def generate_names_uuid_dict() -> dict:
-    if CAMPAIGNS_KEY not in st.session_state:
+    if (
+        CAMPAIGNS_KEY not in st.session_state
+        or not st.session_state[CAMPAIGNS_KEY]
+    ):
         return {}
-    elif not st.session_state[CAMPAIGNS_KEY]:
-        return {}
-    else:
-        campaigns = st.session_state[CAMPAIGNS_KEY].values()
-        return {campaign.name: str(campaign.unique_uuid) for campaign in campaigns} 
+    campaigns = st.session_state[CAMPAIGNS_KEY].values()
+    return {campaign.name: str(campaign.unique_uuid) for campaign in campaigns} 

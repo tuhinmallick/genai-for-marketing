@@ -74,7 +74,7 @@ def sidebar_apply_style(
     with open(image_path, "rb") as fp:
         contents = fp.read()
         menu_image = base64.b64encode(contents).decode("utf-8")
-        menu_image = 'data:image/png;base64,'+menu_image
+        menu_image = f'data:image/png;base64,{menu_image}'
 
     st.markdown(
         style.format(

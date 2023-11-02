@@ -117,16 +117,11 @@ def tag_bq_columns(
     tag.column = column_id
     try:
         tag = datacatalog_client.create_tag(parent=table_entry.name, tag=tag)
-        print('tag created/updated for {}'.format(column_id))
+        print(f'tag created/updated for {column_id}')
     except Exception as e:
         print(e)
         print(
-            'Failed to create template {} for {}.{}.{}.{}'.format(
-                TAG_TEMPLATE_ID, 
-                DATASET_ID, 
-                DATASET_ID, 
-                table_id,
-                column_id)
+            f'Failed to create template {TAG_TEMPLATE_ID} for {DATASET_ID}.{DATASET_ID}.{table_id}.{column_id}'
         )
 
 def tag_metadata_from_bq(

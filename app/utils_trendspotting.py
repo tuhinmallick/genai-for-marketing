@@ -62,11 +62,9 @@ class GoogleTrends:
             location="US",
         )
         df = query_job.to_dataframe()
-        
-        terms = df.loc[0].values[0]
-        terms = terms.split(' ')
 
-        return terms
+        terms = df.loc[0].values[0]
+        return terms.split(' ')
 
 
 class GDELTRetriever:
@@ -183,9 +181,7 @@ class GDELTRetriever:
         startdate = query['startdate']
         enddate = query['enddate']
         articles = self._get_articles_info(keywords, startdate, enddate)
-        documents = self._get_documents(articles)
-
-        return documents
+        return self._get_documents(articles)
 
 
 def summarize_news_article(document: dict, llm):
@@ -225,11 +221,4 @@ def summarize_documents(documents: dict, llm) -> list:
             `page_content`: The original text of the news article.
             `summary`: A one-sentence summary of the news article.
     """
-    summaries = []
-
-    for document in documents:
-        summaries.append(
-            summarize_news_article(document, llm)
-        )
-
-    return summaries
+    return [summarize_news_article(document, llm) for document in documents]
