@@ -318,18 +318,14 @@ if (UUID_KEY in st.session_state and
 
     if link_to_campaign_button:
 
-        assets_group_dict = {}
-        assets_group_dict.update({'business_name': BUSINESS_NAME})
-        assets_group_dict.update(
-            {'scenario':st.session_state[THEMES_FOR_PROMPTS_KEY]})
-        assets_group_dict.update({'headline':st.session_state[HEADLINE_KEY]})
-        assets_group_dict.update(
-            {'long_headline':st.session_state[LONG_HEADLINE_KEY]})
-        assets_group_dict.update(
-            {'description':st.session_state[DESCRIPTION_KEY]})
-        assets_group_dict.update(
-            {'call_to_action':st.session_state[CALL_TO_ACTION_KEY]})
-
+        assets_group_dict = {
+            'business_name': BUSINESS_NAME,
+            'scenario': st.session_state[THEMES_FOR_PROMPTS_KEY],
+            'headline': st.session_state[HEADLINE_KEY],
+            'long_headline': st.session_state[LONG_HEADLINE_KEY],
+            'description': st.session_state[DESCRIPTION_KEY],
+            'call_to_action': st.session_state[CALL_TO_ACTION_KEY],
+        }
         assets_text_pd = pd.DataFrame().from_dict(
             assets_group_dict,
             orient='index',

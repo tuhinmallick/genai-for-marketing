@@ -133,9 +133,7 @@ def get_relevant_documents(
     """
     articles = _get_articles_info(
         keywords, start_date, end_date, max_records)
-    documents = _get_documents(articles)
-
-    return documents
+    return _get_documents(articles)
 
 
 def summarize_news_article(page_content: dict, llm):
@@ -174,11 +172,4 @@ def summarize_documents(documents: dict, llm) -> list:
             `page_content`: The original text of the news article.
             `summary`: A one-sentence summary of the news article.
     """
-    summaries = []
-
-    for document in documents:
-        summaries.append(
-            summarize_news_article(document, llm)
-        )
-
-    return summaries
+    return [summarize_news_article(document, llm) for document in documents]

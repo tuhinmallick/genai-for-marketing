@@ -275,7 +275,7 @@ with tab1:
 def display_campaigns_upload(
         campaign: Campaign
 ):
-    if campaign.workspace_assets == None:
+    if campaign.workspace_assets is None:
         return
     docs_link = f'https://docs.google.com/document/d/{campaign.workspace_assets["brief_docs_id"]}/edit'
     docs_link_preview = f'https://docs.google.com/file/d/{campaign.workspace_assets["brief_docs_id"]}/preview'
@@ -302,12 +302,12 @@ def display_campaigns_upload(
             type=['png', 'jpg'],
             key=FILE_UPLOADER_KEY+str(campaign.unique_uuid),
             accept_multiple_files=True)
-        
+
         cols = st.columns([0.4,0.8])
 
         with cols[0]:
             submit_button = st.form_submit_button("Save images to Campaign")
-        
+
         with cols[1]:
             placeholder_for_toggle = st.empty()
 
@@ -315,8 +315,7 @@ def display_campaigns_upload(
 
     with placeholder_for_toggle:
         preview_docs_toggle = st.toggle(
-            label="Preview brief",
-            key=str(campaign.unique_uuid)+"_toggle"
+            label="Preview brief", key=f"{str(campaign.unique_uuid)}_toggle"
         )
 
     with placeholder_for_iframe.container():

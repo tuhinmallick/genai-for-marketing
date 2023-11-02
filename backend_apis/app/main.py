@@ -156,16 +156,14 @@ def post_image_generate(data: ImageGenerateRequest) -> ImageGenerateResponse:
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     else:
-        generated_images = []
-        for image in imagen_responses:
-            generated_images.append(
-                {
-                    "images_base64_string": image._as_base64_string(),
-                    "image_size": image._size,
-                    "images_parameters": image.generation_parameters
-                }
-            )
-
+        generated_images = [
+            {
+                "images_base64_string": image._as_base64_string(),
+                "image_size": image._size,
+                "images_parameters": image.generation_parameters,
+            }
+            for image in imagen_responses
+        ]
     return ImageGenerateResponse(
         generated_images=generated_images
     )
@@ -195,16 +193,14 @@ def post_image_edit(data: ImageEditRequest) -> ImageGenerateResponse:
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     else:
-        generated_images = []
-        for image in imagen_responses:
-            generated_images.append(
-                {
-                    "images_base64_string": image._as_base64_string(),
-                    "image_size": image._size,
-                    "images_parameters": image.generation_parameters
-                }
-            )
-
+        generated_images = [
+            {
+                "images_base64_string": image._as_base64_string(),
+                "image_size": image._size,
+                "images_parameters": image.generation_parameters,
+            }
+            for image in imagen_responses
+        ]
     return ImageGenerateResponse(
         generated_images=generated_images
     )
@@ -233,7 +229,7 @@ def get_top_search_term(data: TrendTopRequest) -> TrendTopReponse:
                 for i in query_job.result()
         ]
     except Exception as e:
-        message = "Date must use the format YYY-MM-DD. " + str(e)
+        message = f"Date must use the format YYY-MM-DD. {str(e)}"
         raise HTTPException(status_code=400, detail=message)
     else:
         return TrendTopReponse(
@@ -278,9 +274,9 @@ def post_summarize_news(data: NewsSummaryRequest) -> NewsSummaryResponse:
             })
     except Exception as e:
         raise HTTPException(
-            status_code=400, 
-            detail=f"Something went wrong. "
-                    "Could not summarize news articles. {str(e)}")
+            status_code=400,
+            detail='Something went wrong. Could not summarize news articles. {str(e)}',
+        )
 
     return NewsSummaryResponse(
         summaries=summaries
@@ -437,7 +433,7 @@ def post_brief_create_upload(data: BriefCreateRequest) -> BriefCreateResponse:
             drive_service=drive_service,
             folder_name=f"Marketing_Assets_{int(time.time())}",
             parent_folder_id=drive_folder_id)
-        
+
         utils_workspace.set_permission(
             drive_service=drive_service,
             file_id=new_folder_id)
@@ -446,7 +442,8 @@ def post_brief_create_upload(data: BriefCreateRequest) -> BriefCreateResponse:
             drive_service=drive_service,
             drive_file_id=doc_template_id,
             parentFolderId=new_folder_id,
-            copy_title=f"GenAI Marketing Brief")
+            copy_title="GenAI Marketing Brief",
+        )
 
         utils_workspace.update_doc(
             docs_service=docs_service,

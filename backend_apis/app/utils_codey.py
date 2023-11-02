@@ -60,19 +60,8 @@ def get_tags_from_table(
             desc = response.fields["description"].string_value
             data_type = response.fields["data_type"].string_value
             pk = response.fields["is_primary_key"].bool_value
-            fk = response.fields["is_foreign_key"].bool_value            
-            tags_str += ("Full table name: {} "
-                         "- Column: {} " 
-                         "- Data Type: {} " 
-                         "- Primary Key: {} " 
-                         "- Foreign Key: {} " 
-                         "- Description: {}\n".format(
-                f'`{project_id}.{dataset_id}.{table_id}`', 
-                response.column, 
-                data_type, 
-                pk, 
-                fk, 
-                desc))
+            fk = response.fields["is_foreign_key"].bool_value
+            tags_str += f"Full table name: `{project_id}.{dataset_id}.{table_id}` - Column: {response.column} - Data Type: {data_type} - Primary Key: {pk} - Foreign Key: {fk} - Description: {desc}\n"
 
     return tags_str
 
@@ -128,10 +117,7 @@ def get_full_context_from_list(metadata: list):
     Returns:
         A string containing the full context.
     """
-    context = ''
-    for i in metadata:
-        context += i
-    return context
+    return ''.join(metadata)
 
 
 def generate_prompt(
@@ -158,10 +144,7 @@ def generate_prompt(
         The prompt.
     """
     PROMPT_PROJECT_ID = [project_id]*130
-    context = ''
-    for i in metadata:
-        context += i
-
+    context = ''.join(metadata)
     return (f"{prompt.format(*PROMPT_PROJECT_ID)} \n"
              f"{context} \n"
              f"[Q]: {question} \n"

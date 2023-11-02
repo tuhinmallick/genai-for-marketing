@@ -80,8 +80,8 @@ def generate_ad(
     key_prefix: str, 
     image_option: str):
 
-    st.session_state[key_prefix + '_Has_Image'] = has_image
-    st.session_state[key_prefix + '_Image_Option'] = image_option
+    st.session_state[f'{key_prefix}_Has_Image'] = has_image
+    st.session_state[f'{key_prefix}_Image_Option'] = image_option
     response = ""
     try:
         # Initialize variables
@@ -102,7 +102,7 @@ def generate_ad(
                 ).text
     except Exception as e:
         print("Error")
-        print(str(e))
+        print(e)
         response = "No text was generated."
         if theme in THEMES_FOR_PROMPTS:
             index = THEMES_FOR_PROMPTS.index(theme)
@@ -111,11 +111,13 @@ def generate_ad(
             elif platform == "Instagram" and "default_instragram" in page_cfg:
                 response = page_cfg["default_instagram"][index]
 
-    st.session_state[key_prefix+"_Text"] = response
-    if (st.session_state[key_prefix+'_Has_Image'] and 
-        key_prefix+"_Text" in st.session_state):
+    st.session_state[f"{key_prefix}_Text"] = response
+    if (
+        st.session_state[f'{key_prefix}_Has_Image']
+        and f"{key_prefix}_Text" in st.session_state
+    ):
         prompt_image = IMAGE_PROMPT_TEMPLATE.format(theme)
-        st.session_state[key_prefix+"_Generated_Image_Prompt"] = prompt_image
+        st.session_state[f"{key_prefix}_Generated_Image_Prompt"] = prompt_image
 
 
 def render_ad(
@@ -131,30 +133,34 @@ def render_ad(
         CAMPAIGNS_KEY][selected_uuid].campaign_uploaded_images
 
 
-    if key_prefix+"_Text" in st.session_state:
+    if f"{key_prefix}_Text" in st.session_state:
         st.write('**Generated Post**')
-        st.write(st.session_state[key_prefix+"_Text"])
+        st.write(st.session_state[f"{key_prefix}_Text"])
 
-    if (st.session_state[key_prefix+'_Has_Image'] and
-        key_prefix+"_Generated_Image_Prompt" in st.session_state):
+    if (
+        st.session_state[f'{key_prefix}_Has_Image']
+        and f"{key_prefix}_Generated_Image_Prompt" in st.session_state
+    ):
         try:
-            if st.session_state[key_prefix + '_Image_Option'] == 'generated':
+            if st.session_state[f'{key_prefix}_Image_Option'] == 'generated':
                 render_image_generation_and_edition_ui(
-                    image_text_prompt_key=key_prefix+"_Image_Prompt",
-                    generated_images_key=key_prefix+"_Generated_Images",
-                    edit_image_prompt_key=key_prefix+"_Edit_Image_Prompt",
+                    image_text_prompt_key=f"{key_prefix}_Image_Prompt",
+                    generated_images_key=f"{key_prefix}_Generated_Images",
+                    edit_image_prompt_key=f"{key_prefix}_Edit_Image_Prompt",
                     pre_populated_prompts=[
-                        st.session_state[key_prefix +
-                                         "_Generated_Image_Prompt"]],
+                        st.session_state[
+                            key_prefix + "_Generated_Image_Prompt"
+                        ]
+                    ],
                     select_button=True,
-                    selected_image_key=key_prefix+"_Selected_Image",
+                    selected_image_key=f"{key_prefix}_Selected_Image",
                     edit_button=True,
-                    image_to_edit_key=key_prefix+"_Image_To_Edit",
+                    image_to_edit_key=f"{key_prefix}_Image_To_Edit",
                     edit_with_mask=True,
-                    mask_image_key=key_prefix+"_Image_Mask",
-                    edited_images_key=key_prefix+"_Edited_Images",
+                    mask_image_key=f"{key_prefix}_Image_Mask",
+                    edited_images_key=f"{key_prefix}_Edited_Images",
                     download_button=False,
-                    auto_submit_first_pre_populated=True
+                    auto_submit_first_pre_populated=True,
                 )
             else:
                 utils_image.render_image_edit_prompt(
@@ -211,12 +217,12 @@ def render_ad(
         if image:
             ad["image"] = "data:image/png;base64,"+image
 
-            
+
         if link_to_campaign_button:
-            if platform == "Threads":
-                st.session_state[CAMPAIGNS_KEY][selected_uuid].ads_threads = ad
-            elif platform == "Instagram":
+            if platform == "Instagram":
                 st.session_state[CAMPAIGNS_KEY][selected_uuid].ads_insta = ad
+            elif platform == "Threads":
+                st.session_state[CAMPAIGNS_KEY][selected_uuid].ads_threads = ad
             st.success(f"Ad saved to campaign {campaign_name}")
 
     
@@ -261,7 +267,7 @@ if UUID_KEY in st.session_state:
             with i_col2:
                 threads_age = st.slider(
                     'Age Segment', 21, 65, (21,30))
-            
+
             col1, col2 = st.columns([1,1])
             with col1:
                 threads_image = st.checkbox("Include Images", value=True)
@@ -313,9 +319,9 @@ if UUID_KEY in st.session_state:
                 limit=THREADS_CHAR_LIMIT,
                 key_prefix=THREADS_PREFIX,
                 image_option=str(image_option))
-        
-        if THREADS_PREFIX+'_Has_Image' not in st.session_state:
-            st.session_state[THREADS_PREFIX+'_Has_Image'] = False
+
+        if f'{THREADS_PREFIX}_Has_Image' not in st.session_state:
+            st.session_state[f'{THREADS_PREFIX}_Has_Image'] = False
 
         age_range = f"{threads_age[0]}-{threads_age[1]}"
         render_ad(
@@ -334,7 +340,7 @@ if UUID_KEY in st.session_state:
             with i_col2:
                 instagram_age = st.slider(
                     'Age Segment', 21, 65, (21,30))
-            
+
             col1, col2 = st.columns([1,1])
             with col1:
                 instagram_image = st.checkbox("Include Images", value=True)
@@ -387,12 +393,12 @@ if UUID_KEY in st.session_state:
                 limit=INSTAGRAM_CHAR_LIMIT,
                 key_prefix=INSTAGRAM_PREFIX,
                 image_option=str(image_option))
-        
-        if INSTAGRAM_PREFIX+'_Has_Image' not in st.session_state:
-            st.session_state[INSTAGRAM_PREFIX+'_Has_Image'] = False
+
+        if f'{INSTAGRAM_PREFIX}_Has_Image' not in st.session_state:
+            st.session_state[f'{INSTAGRAM_PREFIX}_Has_Image'] = False
 
         age_range = f"{instagram_age[0]}-{instagram_age[1]}"
-        
+
         render_ad(
             INSTAGRAM_PREFIX, 
             platform="Instagram",

@@ -21,6 +21,7 @@ Trendspotting:
 - Generate a social media post for tweeter using summarized information.
 """
 
+
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
@@ -178,7 +179,7 @@ with cols_page[1]:
                                                     keyword_2,
                                                     keyword_3]
 
-        with st.spinner('Summarizing news...'):        
+        with st.spinner('Summarizing news...'):
             retriever = GDELTRetriever(max_records=int(max_records))
             today_date = datetime.now()
             start_date = today_date - timedelta(5)
@@ -194,7 +195,7 @@ with cols_page[1]:
                 st.info('No articles found. Try different keywords.')
             else:
                 summaries = []
-                for i, doc in enumerate(documents):
+                for doc in documents:
                     summary = summarize_news_article(doc, llm)['summary']
                     summaries.append({
                         "original_headline": doc["title"],
@@ -202,7 +203,7 @@ with cols_page[1]:
                         "url": doc["url"]
                     })
                 st.session_state[SUMMARIZATION_SUMMARIES_KEY] = summaries
-        
+
     if SUMMARIZATION_SUMMARIES_KEY in st.session_state:
         st.write(
             f"**Summaries of news articles with the keyword(s)**: "
@@ -219,7 +220,7 @@ with cols_page[1]:
     if (SUMMARIZATION_SUMMARIES_KEY in st.session_state and
         CAMPAIGNS_KEY in st.session_state):
         campaigns_names = generate_names_uuid_dict().keys()
-        with st.form(PAGE_KEY_PREFIX+"_Link_To_Campaign_Upload"):
+        with st.form(f"{PAGE_KEY_PREFIX}_Link_To_Campaign_Upload"):
             st.write("**Choose a Campaign to save the news summaries**")
             selected_name = st.selectbox("List of Campaigns", campaigns_names)
             link_to_campaign_button = st.form_submit_button(

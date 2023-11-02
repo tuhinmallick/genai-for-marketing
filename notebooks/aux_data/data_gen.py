@@ -25,7 +25,7 @@ rng = np.random.default_rng(SEED)
 
 def create_and_populate_customers(num_customers: int = 50000) -> List[Dict]:
     from aux_data.customers_aux_data import channel, locations
-    
+
     customers_location = rng.choice(locations, size=(num_customers))
     customers_channel = rng.choice(channel, size=(num_customers))
     customers_total_purchases = rng.integers(1, 100, size=(num_customers))
@@ -44,19 +44,20 @@ def create_and_populate_customers(num_customers: int = 50000) -> List[Dict]:
     customers_data = []
 
     for i in range(num_customers):
-        customer = {}
-        customer['customer_id'] = int(i)
-        customer['email'] = f'user{i}@sample_user{i}.sample'
-        customer['city'] = customers_location[i]['city']
-        customer['state'] = customers_location[i]['state']
-        customer['channel'] = customers_channel[i]['channel']
-        customer['total_purchases'] = int(customers_total_purchases[i])
-        customer['total_value'] = int(customers_total_value[i])
-        customer['total_emails'] = int(customers_total_emails[i])
-        customer['loyalty_score'] = int(customers_loyalty_score[i])
-        customer['is_media_follower'] = bool(customers_is_media_follower[i])
-
-        customer['last_sign_up_date'] = baseline_datetime - timedelta(days=int(customers_last_sign_up_date[i]))
+        customer = {
+            'customer_id': int(i),
+            'email': f'user{i}@sample_user{i}.sample',
+            'city': customers_location[i]['city'],
+            'state': customers_location[i]['state'],
+            'channel': customers_channel[i]['channel'],
+            'total_purchases': int(customers_total_purchases[i]),
+            'total_value': int(customers_total_value[i]),
+            'total_emails': int(customers_total_emails[i]),
+            'loyalty_score': int(customers_loyalty_score[i]),
+            'is_media_follower': bool(customers_is_media_follower[i]),
+            'last_sign_up_date': baseline_datetime
+            - timedelta(days=int(customers_last_sign_up_date[i])),
+        }
         customer['last_sign_up_date'] = customer['last_sign_up_date'].strftime('%Y-%m-%d')
 
         customer['last_purchase_date'] = baseline_datetime - timedelta(days=int(customers_last_purchase_date[i]))
@@ -78,21 +79,23 @@ def create_and_populate_events(num_customers: int = 50000) -> Dict:
 
     events_per_customer = list(map(int, np.absolute(np.floor(rng.normal(1, 1, size=(num_customers)) * 100))))
     num_events = sum(events_per_customer)
-    
+
     events_type = rng.choice(event_type, size=(num_events))
-    
+
     baseline_datetime = datetime(2023, 4, 1)
     events_date_delta = rng.integers(20, 200, size=(num_events))
-    
+
     events_data = []
     idx = 0
 
     for i in range(num_customers):
         for _ in range(events_per_customer[i]):
-            event = {}
-            event['customer_id'] = i
-            event['event_id'] = idx
-            event['event_date'] = baseline_datetime - timedelta(days=int(events_date_delta[idx]))
+            event = {
+                'customer_id': i,
+                'event_id': idx,
+                'event_date': baseline_datetime
+                - timedelta(days=int(events_date_delta[idx])),
+            }
             event['event_date'] = event['event_date'].strftime('%Y-%m-%d')
             event['event_type'] = events_type[idx]['event_type']
             idx += 1
@@ -118,30 +121,35 @@ def create_and_populate_transactions(num_customers: int = 50000) -> Dict:
 
     baseline_datetime = datetime(2023, 4, 1)
     transactions_date_delta = rng.integers(20, 200, size=(num_transactions))
-    
+
     transaction_data = []
 
     transaction_id = 0
     for i in range(num_customers):
         for _ in range(transactions_per_customer[i]):
-            transaction = {}
-            transaction['transaction_id'] = transaction_id
-            transaction['customer_id'] = i
-            transaction['transaction_quantity'] = int(transaction_qtn[transaction_id])
-            transaction['transaction_value'] = int(transaction_value[transaction_id])
-            transaction['transaction_type'] = transaction_type_choice[transaction_id]['transaction_type']
-            transaction['app_purchase_quantity'] = int(app_purchase_quantity[transaction_id])
-            transaction['is_online'] = bool(transaction_is_online[transaction_id])
-
-            transaction['transaction_date'] = baseline_datetime - timedelta(days=int(transactions_date_delta[transaction_id]))
+            transaction = {
+                'transaction_id': transaction_id,
+                'customer_id': i,
+                'transaction_quantity': int(transaction_qtn[transaction_id]),
+                'transaction_value': int(transaction_value[transaction_id]),
+                'transaction_type': transaction_type_choice[transaction_id][
+                    'transaction_type'
+                ],
+                'app_purchase_quantity': int(
+                    app_purchase_quantity[transaction_id]
+                ),
+                'is_online': bool(transaction_is_online[transaction_id]),
+                'transaction_date': baseline_datetime
+                - timedelta(days=int(transactions_date_delta[transaction_id])),
+            }
             transaction['transaction_date'] = transaction['transaction_date'].strftime('%Y-%m-%d')
-            
+
             transaction['product_name'] = product_name_choice[transaction_id]['product_name']
             transaction['product_id'] = product_name_choice[transaction_id]['product_id']
 
             transaction_id += 1
             transaction_data.append(transaction)
-    
+
     return transaction_data
 
 

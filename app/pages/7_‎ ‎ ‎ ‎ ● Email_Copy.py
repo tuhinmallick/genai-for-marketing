@@ -144,7 +144,7 @@ async def email_generate(row: pd.Series, theme: str,
     except Exception as e:
         generated_response = None
         print("Error")
-        print(str(e))
+        print(e)
 
     if generated_response and generated_response.text:
         generated_text = generated_response.text
@@ -216,11 +216,14 @@ async def generate_emails(
         theme: str,
         audience_dataframe: pd.DataFrame
     ):
-        async_list = await asyncio.gather(
-        *(email_generate(person[1], theme=str(theme), images=images
-        ) for person in audience_dataframe.head(number_of_emails).iterrows()))
-        st.session_state[state_key] = pd.concat(async_list, axis=1).T
-        st.success("All the emails have been generated")
+    async_list = await asyncio.gather(
+        *(
+            email_generate(person[1], theme=theme, images=images)
+            for person in audience_dataframe.head(number_of_emails).iterrows()
+        )
+    )
+    st.session_state[state_key] = pd.concat(async_list, axis=1).T
+    st.success("All the emails have been generated")
 
 
 if CAMPAIGNS_KEY in st.session_state:
@@ -401,5 +404,5 @@ if (GENERATED_EMAILS_KEY in st.session_state and UUID_KEY in st.session_state):
     if link_to_campaign_button:
         emails_copy = st.session_state[GENERATED_EMAILS_KEY].copy()
         st.session_state[CAMPAIGNS_KEY][selected_uuid].emails = emails_copy
-        st.success(f"Emails saved to campaign")
+        st.success("Emails saved to campaign")
 
